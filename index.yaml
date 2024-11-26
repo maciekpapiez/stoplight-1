@@ -1,0 +1,142 @@
+openapi: 3.0.3
+x-stoplight:
+  id: yp8h4r1n6sx83
+tags:
+  - name: Contract Types
+    description: Contract Types
+  - name: Holidays
+    description: Holidays
+info:
+  title: Calamari HR API
+  description: API for interacting with the Calamari HR application.
+  version: 1.0.0
+servers:
+  - url: 'https://{tenantID}.calamari.io'
+    variables:
+      tenantID:
+        description: The tenant ID for your Calamari instance.
+        default: TODO
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+paths:
+  /api/contract-types/v1/all:
+    post:
+      summary: Retrieve all contract types
+      description: Fetches a list of all available contract types from the Calamari system.
+      operationId: getAllContractTypes
+      security:
+        - basicAuth: []
+      requestBody:
+        description: 'Empty body, the endpoint does not require any specific input.'
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+      responses:
+        '200':
+          description: A list of contract types successfully retrieved.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: The unique identifier for the contract type.
+                    name:
+                      type: string
+                      description: The name of the contract type.
+        '400':
+          description: Bad Request - Invalid request parameters.
+        '401':
+          description: Unauthorized - Authentication credentials were not provided or are invalid.
+        '500':
+          description: Internal Server Error - An unexpected error occurred on the server.
+      parameters:
+        - name: Content-Type
+          in: header
+          required: true
+          description: Specifies the media type of the request body.
+          schema:
+            type: string
+            example: application/json
+        - name: Accept
+          in: header
+          required: true
+          description: Specifies the media type of the response.
+          schema:
+            type: string
+            example: application/json
+      tags:
+        - Contract Types
+      x-stoplight:
+        id: kx0y18iqvpuad
+  /api/holiday/v1/find:
+    post:
+      summary: Find employee holiday data
+      description: Searches for holiday records of an employee within a specified date range.
+      operationId: findEmployeeHolidays
+      security:
+        - basicAuth: []
+      requestBody:
+        description: JSON payload with employee details and date range.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                employee:
+                  type: string
+                  description: The email of the employee.
+                  example: john.white@mycompany.com
+                from:
+                  type: string
+                  format: date
+                  description: Start date of the holiday search range.
+                  example: '2017-01-10'
+                to:
+                  type: string
+                  format: date
+                  description: End date of the holiday search range.
+                  example: '2017-01-15'
+              required:
+                - employee
+                - from
+                - to
+      responses:
+        '200':
+          description: Successfully retrieved holiday data for the employee.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    holidayId:
+                      type: string
+                      description: The unique identifier of the holiday record.
+                    date:
+                      type: string
+                      format: date
+                      description: The date of the holiday.
+        '400':
+          description: Bad Request - Invalid input parameters.
+        '401':
+          description: Unauthorized - Authentication credentials were not provided or are invalid.
+        '404':
+          description: Not Found - No holiday records found for the given criteria.
+        '500':
+          description: Internal Server Error - An unexpected error occurred on the server.
+      tags:
+        - Holidays
+      x-stoplight:
+        id: h7vhxt55idpnz
